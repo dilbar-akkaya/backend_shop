@@ -6,6 +6,7 @@ module.exports = {
     getProductsList: './product-service/handlers/getProductsList.js',
     getProductsById: './product-service/handlers/getProductsById.js'
   },
+  externals: ['aws-sdk'],
   devtool: 'source-map',
   resolve: {
     extensions: ['.mjs', '.json', '.ts'],

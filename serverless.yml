@@ -25,7 +25,20 @@ provider:
   runtime: nodejs20.x
   stage: dev
   region: eu-west-1
-
+  environment:
+    PRODUCTS_TABLE: 'Products'
+    STOCK_TABLE: 'Stock'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'dynamodb:Scan'
+        - 'dynamodb:GetItem'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:UpdateItem'
+        - 'dynamodb:DeleteItem'
+      Resource: 
+        - 'arn:aws:dynamodb:${self:provider.region}:*:table/Products'
+        - 'arn:aws:dynamodb:${self:provider.region}:*:table/Stock'
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
 #    role:
@@ -79,6 +92,13 @@ functions:
       - http:
           method: get
           path: /products/{productId}
+  createProduct:
+    handler: handler.createProduct
+    events:
+      - http:
+          path: /products
+          method: post
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -130,3 +150,5 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+plugins:
+  - serverless-offline

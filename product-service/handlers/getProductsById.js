@@ -1,24 +1,41 @@
-import products from '../data.json'
+//import products from '../data.json';
+import AWS from 'aws-sdk';
+AWS.config.update({ region: 'eu-west-1' });
+const dynClient = new AWS.DynamoDB.DocumentClient();
 export const getProductsById = async (event) => {
-  const product = products.find(product => product.id === event.pathParameters.productId)
-  console.log(event)
-  if (!product) {
+  const params = {
+    TableName: process.env.PRODUCTS_TABLE,
+    Key: {
+      id: event.pathParameters.productId,
+    },
+  };
+  try {
+    const product = await dynClient.get(params).promise();
+    if (!product.Item) {
+      return {
+        statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+        body: 'Product not found'
+      }
+    }
+  
     return {
-      statusCode: 404,
+      statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
-      body: 'Product not found'
+      body: JSON.stringify(
+        product.Item
+      ),
     }
-  }
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    body: JSON.stringify(
-      product
-    ),
+  } catch(err) {
+    console.log(err)
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: 'Server error',
+    };
   }
 }
