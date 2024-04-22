@@ -1,5 +1,5 @@
-import { getProductsList } from '../product-service/handlers/getProductsList';
-import data from '../product-service/data.json';
+import { getProductsList } from '../handlers/getProductsList';
+import data from '../data.json';
 
 test('getProductsList returns response', async () => {
     const response = await getProductsList();

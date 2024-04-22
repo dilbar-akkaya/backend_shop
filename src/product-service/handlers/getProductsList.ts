@@ -12,6 +12,8 @@ export const getProductsList = async () => {
       ),
     };
   } catch (err) {
-    return { message: err.message }
+    if (err instanceof Error) {
+      return { message: err.message }
+    }
   }
 };
