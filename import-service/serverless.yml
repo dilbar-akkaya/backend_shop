@@ -1,0 +1,18 @@
+service: import-service
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: dev
+  region: eu-west-1
+
+functions:
+  importProductsFile:
+    handler: .webpack/importProductFile.importProductFile
+
+plugins:
+  - serverless-offline
+
+custom:
+  client:
+    bucketName: Import Service 
