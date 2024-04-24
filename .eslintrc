@@ -5,18 +5,21 @@
     "project": "./tsconfig.json"
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-    "prettier"
+    "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint", "import", "@stylistic/js"],
   "env": {
     "browser": true,
     "node": true
   },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  }
+  "rules": {
+    "import/newline-after-import": ["error", { "count": 1 }],
+    "@stylistic/js/padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
+    "@typescript-eslint/lines-between-class-members":"error",
+    "no-console": "error"
+  },
+  "ignorePatterns": ["webpack.config.js", "serverless.ts", "jest.config.js"]
 }

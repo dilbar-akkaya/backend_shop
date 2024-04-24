@@ -1,19 +1,22 @@
-import products from '../data.json'
+import products from "../data.json";
+
 export const getProductsList = async () => {
+
   try {
-    console.log("products:", products)
+
     return {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(
-        products
-      ),
+      body: JSON.stringify(products),
     };
+    
   } catch (err) {
+
     if (err instanceof Error) {
-      return { message: err.message }
+      
+      return { message: err.message };
     }
   }
 };
