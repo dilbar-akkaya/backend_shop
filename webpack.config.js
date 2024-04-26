@@ -1,12 +1,10 @@
 const path = require('path');
+const slsw = require('serverless-webpack');
 
 module.exports = {
-    mode: 'production',
-    entry: {
-        getProductsList: './src/product-service/handlers/getProductsList.ts',
-        getProductsById: './src/product-service/handlers/getProductsById.ts'
-    },
-    devtool: 'source-map',
+    mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
+    devtool: slsw.lib.webpack.isLocal ? 'source-map' : 'cheap-source-map',
+    entry: slsw.lib.entries,
     resolve: {
         extensions: ['.mjs', '.json', '.ts'],
         symlinks: false,
@@ -21,21 +19,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
+              test: /\.ts$/,
+              exclude: /node_modules/,
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+                experimentalFileCaching: true,
+              },
             },
-            {
-                test: /\.tsx?$/,
-                loader: 'ts-loader',
-                exclude: /node_modules/,
-            }
-        ]
+          ],
     },
     optimization: {
         splitChunks: {

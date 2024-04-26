@@ -7,11 +7,12 @@ const serverlessConfiguration = {
       region: 'eu-west-1',
     },
     plugins: [
-      'serverless-offline'
+      'serverless-offline',
+      'serverless-webpack'
   ],
     functions: {
         getProductsList: {
-          handler: '.webpack/getProductsList.getProductsList',
+          handler: 'src/handlers/getProducts/handler.getProductsList',
           events: [
             {
               http: {
@@ -34,12 +35,24 @@ const serverlessConfiguration = {
           ],
         },
         getProductsById: {
-          handler: '.webpack/getProductsById.getProductsById',
+          handler: 'src/handlers/getProduct/handler.getProductsById',
           events: [
             {
               http: {
                 method: 'get',
                 path: '/products/{productId}',
+                cors: {
+                  origin: '*',
+                  headers: [
+                    'Content-Type',
+                    'X-Amz-Date',
+                    'Authorization',
+                    'X-Api-Key',
+                    'X-Amz-Security-Token',
+                    'X-Amz-User-Agent'
+                  ],
+                  allowCredentials: false,
+                }
               },
             },
           ],

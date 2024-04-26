@@ -13,13 +13,15 @@
     "node": true
   },
   "rules": {
+    "semi": ["error", "always"],
     "import/newline-after-import": ["error", { "count": 1 }],
     "@stylistic/js/padding-line-between-statements": [
       "error",
-      { "blankLine": "always", "prev": "*", "next": "return" }
+      { "blankLine": "always", "prev": "*", "next": "return" },
+      { "blankLine": "always", "prev": "*", "next": "if" }
     ],
-    "@typescript-eslint/lines-between-class-members":"error",
-    "no-console": "error"
+    "@typescript-eslint/lines-between-class-members":"error"
+    
   },
   "ignorePatterns": ["webpack.config.js", "serverless.ts", "jest.config.js"]
 }
