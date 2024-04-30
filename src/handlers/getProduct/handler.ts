@@ -1,18 +1,16 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { generateHttpResponse } from "../../utils/lambda";
 import { StatusCode } from "../../types/types";
-//import AWS from 'aws-sdk';
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
-//AWS.config.update({ region: 'eu-west-1' });
-
-//const dynClient = new AWS.DynamoDB.DocumentClient();
 const dynClient = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: "eu-west-1" })
 );
 
 export const getProductsById = async (event: APIGatewayProxyEvent) => {
+  console.log("Event:", event);
 
   if (event.pathParameters === null) {
 
@@ -36,8 +34,9 @@ export const getProductsById = async (event: APIGatewayProxyEvent) => {
 
       return generateHttpResponse(StatusCode.NOT_FOUND, 'Product not found');
     };
+    console.log("Product:", product.Item);
 
-    return generateHttpResponse(StatusCode.OK, product.Item);
+    return generateHttpResponse(StatusCode.OK, unmarshall(product.Item));
   } catch (err) {
 
     if (err instanceof Error) {

@@ -7,7 +7,7 @@ module.exports = {
     entry: slsw.lib.entries,
    // externals: /^[a-z\-0-9]+$/,
     resolve: {
-        extensions: ['.mjs', '.json', '.ts'],
+        extensions: ['.mjs', '.json', '.ts', '.js'],
         symlinks: false,
         cacheWithContext: false,
             },

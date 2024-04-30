@@ -1,17 +1,13 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-//import AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 import { generateHttpResponse } from '../../utils/lambda';
 import { StatusCode } from '../../types/types';
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 
 const dynClient = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: "eu-west-1" })
 );
-
-//AWS.config.update({ region: 'eu-west-1' });
-//const dynClient = new AWS.DynamoDB.DocumentClient();
 
 export const createProduct = async (event: APIGatewayProxyEvent) => {
     try {
@@ -28,28 +24,39 @@ export const createProduct = async (event: APIGatewayProxyEvent) => {
             description: parsedBody.description,
             price: parsedBody.price,
         };
+        const stockForNewProduct = {
+              product_id: newProduct.id,
+              count: parsedBody.count,
+          };
 
         if (process.env.PRODUCTS_TABLE === undefined) {
             
             return generateHttpResponse(StatusCode.SERVER_ERROR, 'Something is wrong');
         };
 
-  /*       const params = {
-            TableName: process.env.PRODUCTS_TABLE,
-            Item: newProduct,
-        }; */
-
-        await dynClient.send(new PutItemCommand({
-            TableName: process.env.PRODUCTS_TABLE,
-            Item: {
-                id: { S: newProduct.id },
-                title: { S: newProduct.title },
-                description: { S: newProduct.description },
-                price: { N: newProduct.price },
-            }
+        await dynClient.send(new TransactWriteCommand({
+            TransactItems: [
+                { Put: {
+                    TableName: process.env.PRODUCTS_TABLE,
+                    Item: {
+                        id: newProduct.id,
+                        title: newProduct.title,
+                        description: newProduct.description,
+                        price: newProduct.price,
+                    }
+                } },
+                { Put: {
+                    TableName: process.env.STOCK_TABLE,
+                    Item: {
+                        product_id: stockForNewProduct.product_id,
+                        count: stockForNewProduct.count,
+                    }
+                } }
+            ]
         }));
+        console.log("newProduct:", newProduct);
 
-        return generateHttpResponse(StatusCode.OK, newProduct);
+        return generateHttpResponse(StatusCode.OK, { message: 'Product succesfully created', data: newProduct});
     } catch (err) {
 
         if (err instanceof Error) {

@@ -1,7 +1,8 @@
 import { StatusCode } from "../../types/types";
-import { generateHttpResponse } from "../../utils/lambda";
+import { generateHttpResponse } from '../../utils/lambda';
 import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 const dynClient = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: "eu-west-1" })
@@ -14,25 +15,29 @@ export const getProductsList = async () => {
     return generateHttpResponse(StatusCode.SERVER_ERROR, 'Something is wrong');
   };
 
-  const productsCommand = new ScanCommand({ TableName: process.env.PRODUCTS_TABLE });
-  const stockCommand = new ScanCommand({ TableName: process.env.STOCK_TABLE });
-
-  const products = await dynClient.send(productsCommand);
-  const stock = await dynClient.send(stockCommand);
+  const productsScan = new ScanCommand({ TableName: process.env.PRODUCTS_TABLE });
+  const stockScan = new ScanCommand({ TableName: process.env.STOCK_TABLE });
+  const products = await dynClient.send(productsScan);
+  const stock = await dynClient.send(stockScan);
   try {
 
     if (products.Items === undefined) {
 
       return generateHttpResponse(StatusCode.NOT_FOUND, 'Product not found');
     };
-    const productsArray = products.Items.map(product => {
+    const unmarshalledProducts = products.Items.map((item) => unmarshall(item));
+    const productsArray = unmarshalledProducts.map(product => {
 
       if (stock.Items === undefined) {
 
         return generateHttpResponse(StatusCode.NOT_FOUND, 'Product not found');
       };
+      const unmarshalledProductInStock = stock.Items.map((item) => unmarshall(item));
+      const productInStock = unmarshalledProductInStock.find(stock => {
+      
+        return stock.product_id === product.id;
 
-      const productInStock = stock.Items.find(stock => stock.product_id === product.id);
+      });
 
       return {
         ...product,
@@ -40,6 +45,8 @@ export const getProductsList = async () => {
       };
     });
 
+    console.log("List of products:", productsArray);
+    
     return generateHttpResponse(StatusCode.OK, productsArray);
   } catch (err) {
 
