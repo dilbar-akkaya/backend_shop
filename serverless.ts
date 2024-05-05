@@ -8,6 +8,7 @@ const serverlessConfiguration = {
       environment: {
         PRODUCTS_TABLE: 'Products',
         STOCK_TABLE: 'Stock',
+        REGION: 'eu-west-1',
       },
       iamRoleStatements: [
         {
@@ -28,8 +29,18 @@ const serverlessConfiguration = {
     },
     plugins: [
       'serverless-offline',
-      'serverless-webpack'
+      'serverless-esbuild'
   ],
+  custom: {
+    esbuild: {
+        bundle: true,
+        minify: true,
+        sourcemap: true,
+        keepNames: true,
+        tsconfig: './tsconfig.json',
+        platform: 'node',
+    },
+},
     functions: {
       createProduct: {
         handler: 'src/handlers/createProduct/handler.createProduct',

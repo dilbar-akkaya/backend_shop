@@ -13,13 +13,9 @@
     "node": true
   },
   "rules": {
+    "indent": ["error", 2],
     "semi": ["error", "always"],
     "import/newline-after-import": ["error", { "count": 1 }],
-    "@stylistic/js/padding-line-between-statements": [
-      "error",
-      { "blankLine": "always", "prev": "*", "next": "return" },
-      { "blankLine": "always", "prev": "*", "next": "if" }
-    ],
     "@typescript-eslint/lines-between-class-members":"error"
     
   },

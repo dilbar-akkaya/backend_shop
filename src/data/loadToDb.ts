@@ -1,43 +1,40 @@
-//import AWS from 'aws-sdk';
 import { productsDB } from './productsForLoad';
 import { stockDB } from './stockForLoad';
-import { IProduct, IStock, StatusCode } from '../types/types';
-import { generateHttpResponse } from '../utils/lambda';
+import { IProduct, IStock } from '../types/products';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DB_PRODUCTS, DB_STOCKS, REGION } from '../constants';
 
-const dynClient = DynamoDBDocumentClient.from(
-    new DynamoDBClient({ region: "eu-west-1" })
-  );
+const dynamoDBClient = DynamoDBDocumentClient.from(
+  new DynamoDBClient({ region: REGION })
+);
+
 const loadProductsToDB = async (products: IProduct[]) => {
-
-    if (process.env.PRODUCTS_TABLE === undefined) {
-
-        return generateHttpResponse(StatusCode.SERVER_ERROR, 'Something is wrong');
+/*   if (DB_PRODUCTS === '') {
+    throw new Error('PRODUCTS_TABLE is not defined');
+  }; */
+ 
+  for (const product of products) {
+    const params = {
+      TableName: DB_PRODUCTS,
+      Item: product,
     };
-    for (const product of products) {
-        const params = {
-            TableName: process.env.PRODUCTS_TABLE,
-            Item: product,
-        };
-        await dynClient.send(new PutCommand(params));
-
-    }
+    await dynamoDBClient.send(new PutCommand(params));
+  }
 };
 
 const loadStockToDB = async (stock: IStock[]) => {
+/*   if (DB_STOCKS === '') {
+    throw new Error('STOCKS_TABLE is not defined');
+  }; */
 
-    if (process.env.STOCKS_TABLE === undefined) {
-
-        return generateHttpResponse(StatusCode.SERVER_ERROR, 'Something is wrong');
+  for (const item of stock) {
+    const params = {
+      TableName: DB_STOCKS,
+      Item: item,
     };
-    for (const item of stock) {
-        const params = {
-            TableName: process.env.STOCKS_TABLE,
-            Item: item,
-        };
-        await dynClient.send(new PutCommand(params));
-    }
+    await dynamoDBClient.send(new PutCommand(params));
+  }
 };
 
 loadProductsToDB(productsDB);

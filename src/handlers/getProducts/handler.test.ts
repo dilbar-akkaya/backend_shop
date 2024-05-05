@@ -1,6 +1,6 @@
 import { getProductsList } from "./handler";
 import data from "../../data/data.json";
-import { StatusCode } from "../../types/types";
+import { StatusCode } from "../../types/products";
 
 describe('getProducts function', () => {
 
