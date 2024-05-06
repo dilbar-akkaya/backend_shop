@@ -9,11 +9,7 @@ const dynamoDBClient = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: REGION })
 );
 
-const loadProductsToDB = async (products: IProduct[]) => {
-/*   if (DB_PRODUCTS === '') {
-    throw new Error('PRODUCTS_TABLE is not defined');
-  }; */
- 
+const loadProductsToDB = async (products: IProduct[]) => { 
   for (const product of products) {
     const params = {
       TableName: DB_PRODUCTS,
@@ -24,10 +20,6 @@ const loadProductsToDB = async (products: IProduct[]) => {
 };
 
 const loadStockToDB = async (stock: IStock[]) => {
-/*   if (DB_STOCKS === '') {
-    throw new Error('STOCKS_TABLE is not defined');
-  }; */
-
   for (const item of stock) {
     const params = {
       TableName: DB_STOCKS,

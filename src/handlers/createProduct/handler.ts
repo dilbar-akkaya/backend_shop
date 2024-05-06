@@ -41,9 +41,6 @@ export const createProduct = async (event: APIGatewayProxyEvent) => {
       count: validBody.data.count,
     };
     
-    /*     if (DB_PRODUCTS === '' || DB_STOCKS === '') {  
-      return generateHttpResponse(StatusCode.SERVER_ERROR, 'Table is not defined');
-    }; */
     await dynamoDBClient.send(new TransactWriteCommand({
       TransactItems: [
         { Put: {

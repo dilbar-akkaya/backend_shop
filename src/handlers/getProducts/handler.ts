@@ -10,10 +10,6 @@ const dynamoDBClient = DynamoDBDocumentClient.from(
 );
 
 export const getProductsList = async () => {
-/*   if (DB_PRODUCTS == '' || DB_STOCKS == '') {
-    return generateHttpResponse(StatusCode.SERVER_ERROR, 'DB table is not defined');
-  }; */
-
   const productsScan = new ScanCommand({ TableName: DB_PRODUCTS });
   const stockScan = new ScanCommand({ TableName: DB_STOCKS });
   const products = await dynamoDBClient.send(productsScan);

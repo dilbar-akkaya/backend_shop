@@ -19,5 +19,5 @@
     "@typescript-eslint/lines-between-class-members":"error"
     
   },
-  "ignorePatterns": ["webpack.config.js", "serverless.ts", "jest.config.js"]
+  "ignorePatterns": ["serverless.ts", "jest.config.js"]
 }
