@@ -5,7 +5,7 @@ import { StatusCode } from '../../types/http';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { z } from 'zod';
-import { DB_PRODUCTS, DB_STOCKS, REGION } from '../../constants';
+import { REGION } from '../../constants';
 
 const dynamoDBClient = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: REGION })
@@ -44,7 +44,7 @@ export const createProduct = async (event: APIGatewayProxyEvent) => {
     await dynamoDBClient.send(new TransactWriteCommand({
       TransactItems: [
         { Put: {
-          TableName: DB_PRODUCTS,
+          TableName: process.env.PRODUCTS_TABLE,
           Item: {
             id: newProduct.id,
             title: newProduct.title,
@@ -53,7 +53,7 @@ export const createProduct = async (event: APIGatewayProxyEvent) => {
           }
         } },
         { Put: {
-          TableName: DB_STOCKS,
+          TableName: process.env.STOCK_TABLE,
           Item: {
             product_id: stockForNewProduct.product_id,
             count: stockForNewProduct.count,

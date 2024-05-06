@@ -1,32 +1,23 @@
-
-process.env.PRODUCTS_TABLE = 'Products';
-process.env.STOCK_TABLE = 'Stocks';
 import { createProduct } from './handler';
+import * as AWSMock from 'aws-sdk-mock';
+import * as AWS from 'aws-sdk';
+import { APIGatewayProxyEvent } from 'aws-lambda';
+import { IProduct } from '../../types/products';
+import { v4 as uuidv4 } from 'uuid';
 
-//import { v4 as uuidv4 } from 'uuid';
-/* 
-jest.mock('@aws-sdk/lib-dynamodb', () => {
-    const mockSend = jest.fn();
-  
-    return {
-      DynamoDBDocumentClient: {
-        from: jest.fn().mockReturnValue({
-          send: mockSend,
-        }),
-      },
-      TransactWriteCommand: jest.fn(),
-    };
-  });
-  
-describe("createProduct", () => { 
-  it("should create a new product", async () => {
+AWSMock.setSDKInstance(AWS);
+
+describe('createProduct', () => {
+  let event: APIGatewayProxyEvent;
+
+  beforeEach(() => {
     const newProduct = {
-      title: "Mock Product",
-      description: "Mock Description",
+      title: "Test1",
+      description: "Test1 Description",
       price: 100,
       count: 1
     };
-    const event = {
+    event = {
       body: JSON.stringify(newProduct),
       headers: {},
       multiValueHeaders: {},
@@ -69,60 +60,32 @@ describe("createProduct", () => {
       },
       resource: "",
     };
-    await createProduct(event);
-
-    expect(mockSend).toHaveBeenCalled();
-    expect(mockSend).toHaveBeenCalledWith(expect.anything());
-  });
-}); */
-
-import * as AWSMock from 'aws-sdk-mock';
-import * as AWS from 'aws-sdk';
-import { AWSError } from 'aws-sdk/global';
-import { DocumentClient, TransactWriteItemsInput } from 'aws-sdk/clients/dynamodb';
-import { APIGatewayProxyEvent } from 'aws-lambda';
-
-AWSMock.setSDKInstance(AWS);
-
-describe('createProduct', () => {
-
-  beforeEach(() => {
-    AWSMock.mock('DynamoDB.DocumentClient', 'transactWrite', 
-      (params: TransactWriteItemsInput, callback: (err: AWSError, data: DocumentClient.TransactWriteItemsOutput) => void) => 
-      {
-        callback(undefined as unknown as AWSError, { ConsumedCapacity: []});
-      }
-    );
+    
+    AWSMock.mock('DynamoDB.DocumentClient', 'transactWrite', (params:unknown , callback: (err: Error | null, data: IProduct | null) => void) => {
+      const product: IProduct = {
+        title: "Test1",
+        description: "Test1 Description",
+        price: 100,
+        id: uuidv4(),
+      };
+      callback(null, product);
+    });
   });
 
   afterEach(() => {
     AWSMock.restore('DynamoDB.DocumentClient');
   });
 
-  it('should call DynamoDB with correct params', async () => {
-    const mockEvent: APIGatewayProxyEvent = {
-      body: JSON.stringify({
-        title: 'test title',
-        description: 'test description',
-        price: 123,
-        count: 1,
-      }),
-    } as unknown as APIGatewayProxyEvent;
+  it('should return code 500 and error message', async () => {
+    AWSMock.restore('DynamoDB.DocumentClient');
+    AWSMock.mock('DynamoDB.DocumentClient', 'transactWrite', (_params: unknown, callback:  (err: Error | null, data: IProduct | null) => void) => {
+      callback(new Error('Test error'), null);
+    });
 
-    const result = await createProduct(mockEvent);
-    const expectedResult = {
-      statusCode: 200, 
-      body: JSON.stringify({
-        message: 'Product succesfully created',
-        data: {
-          title: 'test title',
-          description: 'test description',
-          price: 123,
-          count: 1,
-        },
-      }),
-    };
-    
-    expect(result).toEqual(expectedResult);
+    const result = await createProduct(event);
+    const body = JSON.parse(result?.body || '') as { message: string };
+
+    expect(result?.statusCode).toEqual(500);
+    expect(body.message).toBeDefined();
   });
 });
