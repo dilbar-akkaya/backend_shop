@@ -1,0 +1,23 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "import", "@stylistic/js"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "semi": ["error", "always"],
+    "import/newline-after-import": ["error", { "count": 1 }],
+    "@typescript-eslint/lines-between-class-members":"error"
+    
+  },
+  "ignorePatterns": ["serverless.ts", "jest.config.js"]
+}
