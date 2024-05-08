@@ -6,7 +6,7 @@
     "deploy": "sls deploy",
     "remove": "sls remove",
     "local": "sls offline start",
-    "test": "cross-env REGION=eu-west-1 jest src/handlers/createProduct/handler.test.ts",
+    "test": "cross-env REGION=eu-west-1 jest src/handlers/importProductsFile/handler.test.ts",
     "lint": "eslint"
   },
   "author": "",

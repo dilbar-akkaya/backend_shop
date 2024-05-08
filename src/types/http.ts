@@ -1,11 +1,3 @@
-/* export interface HttpResponse {
-    statusCode: number;
-    headers: {
-      "Access-Control-Allow-Origin": string;
-    }
-    body: string;
-  }; */
-
 export enum StatusCode {
     OK = 200,
     BAD_REQUEST = 400,
