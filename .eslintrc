@@ -13,10 +13,12 @@
     "node": true
   },
   "rules": {
-    "indent": ["error", 2],
     "semi": ["error", "always"],
     "import/newline-after-import": ["error", { "count": 1 }],
-    "@typescript-eslint/lines-between-class-members":"error"
+    "@typescript-eslint/lines-between-class-members":"error",
+    "indent": "off",
+    "@typescript-eslint/indent": "error",
+    "quotes": ["error", "double", {"allowTemplateLiterals": true}]
     
   },
   "ignorePatterns": ["serverless.ts", "jest.config.js"]
