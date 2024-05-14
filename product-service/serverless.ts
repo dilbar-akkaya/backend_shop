@@ -42,7 +42,7 @@ const serverlessConfigurationProductService = {
         minify: true,
         sourcemap: true,
         keepNames: true,
-        tsconfig: '../tsconfig.json',
+        tsconfig: 'tsconfig.json',
         platform: 'node',
     },
 },
