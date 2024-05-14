@@ -1,11 +1,11 @@
 import { S3Event, S3EventRecord } from "aws-lambda";
 import { S3Client, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import csv from "csv-parser";
-import { Stream, Writable } from "stream";
-import util from "util";
+import { Readable, Writable } from "stream";
+import { pipeline }  from "stream/promises";
 
-const pipelineAsync = util.promisify(Stream.pipeline);
 const s3 = new S3Client();
+
 const handleRecord = async (record: S3EventRecord) => {
     const bucketName = record.s3.bucket.name;
     const key = record.s3.object.key;
@@ -19,13 +19,18 @@ const handleRecord = async (record: S3EventRecord) => {
         throw new Error("Object body does not exist");
     };
 
+    if (!(s3Object.Body instanceof Readable)) {
+        throw new Error("Object body is not Readable");
+    };
+
     const stream = s3Object.Body;
-    await pipelineAsync(
+    await pipeline(
         stream,
         csv(),
         new Writable({
+            objectMode: true,
             write: (chunk, encoding, done) => {
-                console.log(JSON.stringify(chunk));
+                console.log(chunk);
                 done();
             },
         })
