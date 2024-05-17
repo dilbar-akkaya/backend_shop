@@ -11,7 +11,7 @@ const dynamoDBClient = DynamoDBDocumentClient.from(
     new DynamoDBClient({ region: REGION })
 );
 
-const newProductSchema = z.object({
+export const newProductSchema = z.object({
     title: z.string(),
     description: z.string(),
     price: z.number(),

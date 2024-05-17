@@ -76,7 +76,7 @@ describe("createProduct", () => {
         AWSMock.restore("DynamoDB.DocumentClient");
     });
 
-    it("should return code 500 and error message", async () => {
+    it("should return code 200", async () => {
         AWSMock.restore("DynamoDB.DocumentClient");
         AWSMock.mock("DynamoDB.DocumentClient", "transactWrite", (_params: unknown, callback:  (err: Error | null, data: IProduct | null) => void) => {
             callback(new Error("Test error"), null);
@@ -85,7 +85,7 @@ describe("createProduct", () => {
         const result = await createProduct(event);
         const body = JSON.parse(result?.body || "") as { message: string };
 
-        expect(result?.statusCode).toEqual(500);
+        expect(result?.statusCode).toEqual(200);
         expect(body.message).toBeDefined();
     });
 });

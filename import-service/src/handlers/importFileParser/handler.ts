@@ -1,10 +1,13 @@
 import { S3Event, S3EventRecord } from "aws-lambda";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import { S3Client, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import csv from "csv-parser";
 import { Readable, Writable } from "stream";
 import { pipeline }  from "stream/promises";
+import { queueUrl } from "../../constants";
 
 const s3 = new S3Client();
+const sqs = new SQSClient();
 
 const handleRecord = async (record: S3EventRecord) => {
     const bucketName = record.s3.bucket.name;
@@ -29,8 +32,15 @@ const handleRecord = async (record: S3EventRecord) => {
         csv(),
         new Writable({
             objectMode: true,
-            write: (chunk, encoding, done) => {
-                console.log(chunk);
+            write: async (chunk, encoding, done) => {
+                chunk.price = Number(chunk.price);
+                chunk.count = Number(chunk.count);
+                const chunkString = JSON.stringify(chunk);
+                const sqsCommand = new SendMessageCommand({
+                    QueueUrl: queueUrl,
+                    MessageBody: chunkString,
+                });
+                await sqs.send(sqsCommand);
                 done();
             },
         })

@@ -14,6 +14,11 @@ const serverlessConfiguration = {
       iamRoleStatements: [
         {
           Effect: 'Allow',
+          Action: ['sqs:ReceiveMessage', 'sqs:SendMessage'],
+          Resource: "*"
+        },
+        {
+          Effect: 'Allow',
           Action: [
             's3:PutObject',
             's3:GetObject',

@@ -6,12 +6,13 @@
     "deploy": "sls deploy",
     "remove": "sls remove",
     "local": "sls offline start",
-    "test": "cross-env REGION=eu-west-1 jest product-service/src/handlers/createProduct/handler.test.ts",
+    "test": "cross-env REGION=eu-west-1 PRODUCTS_TABLE=Products STOCK_TABLE=Stock jest product-service/src/handlers/catalogBatchProccess/handler.test.ts",
     "lint": "eslint"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@aws-sdk/client-sts": "^3.575.0",
     "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
@@ -45,6 +46,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.564.0",
     "@aws-sdk/client-s3": "^3.569.0",
+    "@aws-sdk/client-sns": "^3.576.0",
     "@aws-sdk/lib-dynamodb": "^3.564.0",
     "@aws-sdk/s3-request-presigner": "^3.569.0",
     "@aws-sdk/util-dynamodb": "^3.569.0",

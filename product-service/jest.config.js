@@ -10,4 +10,6 @@ module.exports = {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
     "cache": false,
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
