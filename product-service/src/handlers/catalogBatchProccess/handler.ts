@@ -74,3 +74,4 @@ export const catalogBatchProccess = async (event: SQSEvent) => {
 
     };
 };
+
