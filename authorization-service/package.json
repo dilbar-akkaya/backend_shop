@@ -1,0 +1,48 @@
+{
+  "name": "backend_shop",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "deploy": "sls deploy",
+    "remove": "sls remove",
+    "local": "sls offline start",
+    "test": "cross-env REGION=eu-west-1 jest import-service/src/handlers/importProductsFile/handler.test.ts",
+    "lint": "eslint"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
+    "@stylistic/eslint-plugin-js": "^1.7.2",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@types/aws-lambda": "^8.10.137",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "aws-sdk-client-mock": "^4.0.0",
+    "aws-sdk-mock": "^5.9.0",
+    "babel-jest": "^29.7.0",
+    "babel-loader": "^9.1.3",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.20.2",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "jest": "^29.7.0",
+    "serverless": "^3.20.0",
+    "serverless-esbuild": "^1.52.1",
+    "serverless-finch": "^4.0.0",
+    "serverless-offline": "^13.3.4",
+    "serverless-s3-cleaner": "^2.0.1",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0"
+  }
+}
