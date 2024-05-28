@@ -64,6 +64,16 @@ export const catalogBatchProccess = async (event: SQSEvent) => {
                 TopicArn: process.env.SNS_ARN,
                 Message: `New product with id ${newProductParams.Item.id} created`,
                 Subject: "New product creation",
+                MessageAttributes: {
+                    "price": {
+                        DataType: "Number",
+                        StringValue: product.data.price.toString()
+                    },
+                    "count": {
+                        DataType: "Number",
+                        StringValue: product.data.count.toString()
+                    }
+                }
             };
 
             await sns.send(new PublishCommand(snsParams));

@@ -88,7 +88,18 @@ const serverlessConfigurationProductService = {
           Endpoint: 'dilbar_akkaya@epam.com',
           Protocol: 'email',
           TopicArn: 
-          {"Ref": "NewProductTopic"}
+          {"Ref": "NewProductTopic"},
+          FilterPolicy: { price: [{"numeric": ["=", 19]}] }
+        }
+      },
+      AdditionalProductSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Endpoint: 'dilbarmutavalova@gmail.com',
+          Protocol: 'email',
+          TopicArn: 
+          {"Ref": "NewProductTopic"},
+          FilterPolicy: { count: [{"numeric": ["=", 10]}] }
         }
       }
     }, 
