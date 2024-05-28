@@ -1,0 +1,59 @@
+swagger: '3.1'
+info:
+  version: '1.0'
+  title: 'Product Service API'
+  description: 'API Documentation for Product Service'
+schemes:
+  - 'https'
+host: 'ytru5xy4cd.execute-api.eu-west-1.amazonaws.com'
+basePath: '/dev'
+paths:
+  /products:
+    get:
+      tags:
+        - 'Products'
+      summary: 'Get all products'
+      responses:
+        '200':    
+          description: 'list of all products'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        '400':
+          description: 'Bad Request'
+  /products/{id}:   
+    get:
+      tags:
+        - 'Products'
+      summary: 'Get a one product by ID'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          type: 'string'
+          required: true   
+          description: 'ID of the product'
+      responses:
+        '200':          
+          description: 'product object'
+        '400':
+          description: 'Bad Request'
+        '404':
+          description: 'Product not found'
+definitions:
+  Product:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      price:
+        type: number
+      description:
+        type: string
+    required:
+      - id
+      - title
+      - price 
+      - description       
