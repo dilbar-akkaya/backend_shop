@@ -4,7 +4,6 @@ import { S3Client, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } fr
 import csv from "csv-parser";
 import { Readable, Writable } from "stream";
 import { pipeline }  from "stream/promises";
-import { queueUrl } from "../../constants";
 
 const s3 = new S3Client();
 const sqs = new SQSClient();
@@ -33,14 +32,19 @@ const handleRecord = async (record: S3EventRecord) => {
         new Writable({
             objectMode: true,
             write: async (chunk, encoding, done) => {
-                chunk.price = Number(chunk.price);
-                chunk.count = Number(chunk.count);
-                const chunkString = JSON.stringify(chunk);
+                const newChunk = {
+                    ...chunk,
+                    price: Number(chunk.price),
+                    count: Number(chunk.count),
+                };                
+                const chunkString = JSON.stringify(newChunk);
                 const sqsCommand = new SendMessageCommand({
-                    QueueUrl: queueUrl,
+                    QueueUrl: process.env.QUEUE_URL,
                     MessageBody: chunkString,
                 });
+
                 await sqs.send(sqsCommand);
+                
                 done();
             },
         })

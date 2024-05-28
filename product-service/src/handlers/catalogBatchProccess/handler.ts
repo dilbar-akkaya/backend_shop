@@ -61,7 +61,7 @@ export const catalogBatchProccess = async (event: SQSEvent) => {
             }));
 
             const snsParams = {
-                TopicArn: "arn:aws:sns:eu-west-1:637423586618:createProductTopic",
+                TopicArn: process.env.SNS_ARN,
                 Message: `New product with id ${newProductParams.Item.id} created`,
                 Subject: "New product creation",
             };

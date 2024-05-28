@@ -8,14 +8,26 @@ const serverlessConfiguration = {
       environment: {
         PRODUCTS_TABLE: 'Products',
         STOCK_TABLE: 'Stock',
-        REGION: 'eu-west-1',
+        ACCOUNT_ID: '${aws:accountId}',
+        REGION: '${aws:region}',
         BUCKET: 'import-service-csv',
+        QUEUE_URL: {
+          'Fn::Join': [
+              '', [
+              'https://sqs.',
+              { 'Fn::Sub': '${AWS::Region}' },
+              '.amazonaws.com/',
+              { 'Fn::Sub': '${AWS::AccountId}' },
+              '/catalogItemsQueue'
+              ]
+          ]
+      },
       },
       iamRoleStatements: [
         {
           Effect: 'Allow',
           Action: ['sqs:ReceiveMessage', 'sqs:SendMessage'],
-          Resource: "*"
+          Resource: {"Fn::Sub":'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:catalogItemsQueue'}
         },
         {
           Effect: 'Allow',

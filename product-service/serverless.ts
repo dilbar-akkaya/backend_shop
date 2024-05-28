@@ -1,17 +1,19 @@
-import { newProductSchema } from "./src/handlers/createProduct/handler";
-
 const serverlessConfigurationProductService = {
   service: 'product-service',
   provider: {
     name: 'aws',
+    profile: 'aws_profile',
     runtime: 'nodejs20.x',
     stage: 'dev',
     region: 'eu-west-1',
     environment: {
       PRODUCTS_TABLE: 'Products',
       STOCK_TABLE: 'Stock',
-      REGION: 'eu-west-1',
-      SNS_ARN: 'arn:aws:sns:eu-west-1:637423586618:createProductTopic'
+      ACCOUNT_ID: '${aws:accountId}',
+      REGION: '${aws:region}',
+      SNS_ARN: {
+        Ref: 'NewProductTopic'
+      }
     },
     iamRoleStatements: [
       {
