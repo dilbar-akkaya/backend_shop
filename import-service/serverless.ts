@@ -25,6 +25,13 @@ const serverlessConfiguration = {
       },
       iamRoleStatements: [
         {
+          Effect: "Allow",
+          Action: ["lambda:InvokeFunction"],
+          Resource: [
+            {"Fn::Sub":"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:authorization-service-dev-basicAuthorizer"},
+          ],
+        },
+        {
           Effect: 'Allow',
           Action: ['sqs:ReceiveMessage', 'sqs:SendMessage'],
           Resource: {"Fn::Sub":'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:catalogItemsQueue'}
@@ -72,6 +79,13 @@ const serverlessConfiguration = {
                       name: true
                     }
                   },
+                },
+                authorizer: {
+                  name: "basicAuthorizer",
+                  arn: "arn:aws:lambda:${self:provider.region}:${self:provider.environment.ACCOUNT_ID}:function:authorization-service-dev-basicAuthorizer",
+                  type: "token",
+                  identitySource: "method.request.header.Authorization",
+                  resultTtlInSeconds: 0
                 },
                 cors: {
                   origin: '*',
