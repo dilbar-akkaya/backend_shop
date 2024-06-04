@@ -11,7 +11,7 @@ const serverlessConfiguration = {
         shouldStartNameWithService: true,
       },
       environment: {
-        REGION: 'eu-west-1',
+        REGION: '${self:provider.region}',
       },
       iamRoleStatements: [
         {
@@ -32,7 +32,7 @@ const serverlessConfiguration = {
                 "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
             },
             ResponseType: 'ACCESS_DENIED',
-            RestApiId: 'cruvka2bu8',
+            RestApiId: '${env:API_GATEWAY_ID}',
           },
         },
         GatewayResponseUnauthorized: {
@@ -44,7 +44,7 @@ const serverlessConfiguration = {
                 "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
             },
             ResponseType: 'UNAUTHORIZED',
-            RestApiId: 'cruvka2bu8',
+            RestApiId: '${env:API_GATEWAY_ID}',
           },
         },
       },
@@ -52,7 +52,8 @@ const serverlessConfiguration = {
     plugins: [
       'serverless-offline',
       'serverless-esbuild',
-      'serverless-dotenv-plugin'
+      'serverless-dotenv-plugin',
+      'serverless-export-env',
 
   ],
   custom: {

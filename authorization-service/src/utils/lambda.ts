@@ -1,7 +1,6 @@
 import { APIGatewayProxyResult } from "aws-lambda";
 
 export const generateHttpResponse = <T>(statusCode: number, response: T): APIGatewayProxyResult => {
-
     return {
         statusCode: statusCode,
         headers: {
