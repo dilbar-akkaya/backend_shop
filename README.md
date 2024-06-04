@@ -1,3 +1,3 @@
 # backend_shop
 
-sls deploy
+npm run deploy
